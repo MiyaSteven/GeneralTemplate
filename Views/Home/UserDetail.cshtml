@@ -1,0 +1,43 @@
+@using GeneralTemplate.Models
+@model GroupWrapper
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 text-right">
+                <a href="/bright_ideas">Bright Ideas</a> | <a href="/logout">Logout</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                    <div class="row">
+                        <h2>Name: @Model.LoggedUser.Name</h2>
+                    </div>
+                    <div class="row">
+                        <h2>Alias: @Model.LoggedUser.Alias</h2>
+                    </div>
+                    <div class="row">
+                        <h2>Email: @Model.LoggedUser.Email</h2>
+                    </div>
+                    @foreach(Group group in Model.LoggedUser.ExistingGroups)
+                    {
+                    <div class="row">
+                        <h2>Total Number of Likes: @group.GuestsAttending.Count</h2>
+                    </div>
+                    <div class="row">
+                        <h2>Total Number of Posts: @group.Planner.ExistingGroups.Count</h2>
+                    </div>
+                    }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

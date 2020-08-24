@@ -11,17 +11,19 @@ namespace GeneralTemplate.Models
         [Key]
         public int UserId { get; set; }
 
-        [Required(ErrorMessage = "First name is required.")]
-        [MinLength(2, ErrorMessage = "First name must be at least 2 characters.")]
-        [MaxLength(20, ErrorMessage = "Server space isn't free, you know. Please keep first name to 20 characters.")]
-        [Display(Name = "First Name: ")]
-        public string FirstName { get; set; }
+        [Required(ErrorMessage = "Name is required.")]
+        [MinLength(2, ErrorMessage = "Name must be at least 2 characters.")]
+        [RegularExpression("^[0-9A-Za-z ]+$", ErrorMessage = "Name must only contain letters and spaces")]
+        [MaxLength(20, ErrorMessage = "Please keep name to 20 characters.")]
+        [Display(Name = "Name: ")]
+        public string Name { get; set; }
 
-        [Required(ErrorMessage = "Last name is required.")]
-        [MinLength(2, ErrorMessage = "Last name must be at least 2 characters.")]
-        [MaxLength(40, ErrorMessage = "Server space isn't free, you know. Please keep last name to 40 characters.")]
-        [Display(Name = "Last Name: ")]
-        public string LastName { get; set; }
+        [Required(ErrorMessage = "Alias is required.")]
+        [MinLength(2, ErrorMessage = "Alias must be at least 2 characters.")]
+        [RegularExpression("^[a-zA-Z0-9]+$", ErrorMessage = "Alias must only contain letters and numbers")]
+        [MaxLength(40, ErrorMessage = "Please keep Alias to 40 characters.")]
+        [Display(Name = "Alias: ")]
+        public string Alias { get; set; }
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email address")]
@@ -42,8 +44,6 @@ namespace GeneralTemplate.Models
         public string Confirm { get; set; }
         public List<Group> ExistingGroups { get; set; }
         public List<RSVP> RSVPs { get; set; }
-        public List<Comment> Comments { get; set; }
-        public List<SignUp> SignedUpUsers { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }

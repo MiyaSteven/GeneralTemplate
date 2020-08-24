@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GeneralTemplate.Migrations
 {
-    public partial class holymigration : Migration
+    public partial class yoolmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,8 +14,8 @@ namespace GeneralTemplate.Migrations
                 {
                     UserId = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    FirstName = table.Column<string>(maxLength: 20, nullable: false),
-                    LastName = table.Column<string>(maxLength: 40, nullable: false),
+                    Name = table.Column<string>(maxLength: 20, nullable: false),
+                    Alias = table.Column<string>(maxLength: 40, nullable: false),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
@@ -33,12 +33,6 @@ namespace GeneralTemplate.Migrations
                     GroupId = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     GroupName = table.Column<string>(nullable: false),
-                    GroupMemberOne = table.Column<string>(nullable: false),
-                    GroupMemberTwo = table.Column<string>(nullable: false),
-                    Date = table.Column<DateTime>(nullable: false),
-                    Time = table.Column<DateTime>(nullable: false),
-                    Description = table.Column<string>(nullable: false),
-                    Address = table.Column<string>(nullable: false),
                     UserId = table.Column<int>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
                     UpdatedAt = table.Column<DateTime>(nullable: false)
@@ -48,35 +42,6 @@ namespace GeneralTemplate.Migrations
                     table.PrimaryKey("PK_DbGroups", x => x.GroupId);
                     table.ForeignKey(
                         name: "FK_DbGroups_DbUsers_UserId",
-                        column: x => x.UserId,
-                        principalTable: "DbUsers",
-                        principalColumn: "UserId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DbComments",
-                columns: table => new
-                {
-                    CommentId = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    CommentText = table.Column<string>(nullable: true),
-                    UserId = table.Column<int>(nullable: false),
-                    GroupId = table.Column<int>(nullable: false),
-                    CreatedAt = table.Column<DateTime>(nullable: false),
-                    UpdatedAt = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_DbComments", x => x.CommentId);
-                    table.ForeignKey(
-                        name: "FK_DbComments_DbGroups_GroupId",
-                        column: x => x.GroupId,
-                        principalTable: "DbGroups",
-                        principalColumn: "GroupId",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_DbComments_DbUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "DbUsers",
                         principalColumn: "UserId",
@@ -112,16 +77,6 @@ namespace GeneralTemplate.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_DbComments_GroupId",
-                table: "DbComments",
-                column: "GroupId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_DbComments_UserId",
-                table: "DbComments",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_DbGroups_UserId",
                 table: "DbGroups",
                 column: "UserId");
@@ -139,9 +94,6 @@ namespace GeneralTemplate.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "DbComments");
-
             migrationBuilder.DropTable(
                 name: "DbRSVPs");
 
