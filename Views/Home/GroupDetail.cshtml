@@ -1,0 +1,94 @@
+@using GeneralTemplate.Models
+@model GroupWrapper
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-4 text-right">
+                <a href="/dashboard">Dashboard</a> | <a href="/logout">Log Out</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-8">
+                @foreach(Group group in Model.AllGroups)
+                {
+                <div class="row">
+                    <h1>Welcome to the @group.GroupName's page</h1>
+                    <br>
+                    <h3>The Founders are @group.GroupMemberOne and @group.GroupMemberTwo</h3>
+                </div>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <h3>Start Date: @group.Date.Value.ToString("MM dd, yy @ HH mm")</h3>
+                    </div>
+                    <div class="col-sm-12">
+                        <h3>End Time: @group.Time.Value.ToString("MM dd, yy @ HH mm")</h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4>Guests Attending:</h4>
+                        <ul>
+                            @foreach(RSVP rsvp in group.GuestsAttending)
+                            {
+                                <li>@rsvp.Guest.FirstName @rsvp.Guest.LastName</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-8">
+                        <h4>Comments:</h4>
+                            <ul>
+                            @foreach(Comment comment in group.Comments)
+                            {
+                                @if(group.GroupId == comment.GroupId)
+                                {
+                                    <li class="comment">
+                                        @comment.CommentText | @comment.User.FirstName @comment.User.LastName | @comment.UpdatedAt
+                                    </li>
+                                }
+                            }
+                            </ul>
+                        <form class="comment" asp-action="PostComment" asp-controller="Home" method="post" asp-route-GroupId="@group.GroupId">
+                            <h5>Post A Comment</h5>
+                            <div>
+                                <textarea name="CommentText" id="CommentText" cols="40" rows="5"></textarea>
+                            </div>
+                            <input type="submit">
+                        </form>
+                    </div>
+                </div>
+                @* <div class="row">
+                    <div class="col-sm-8">
+                        <h4>Sign Up:</h4>
+                        <form asp-action="SignUp" asp-controller="Home" asp-method="post">
+                            <div class="form-group row">
+                                <label asp-for="SignUpForm.SignUpTimeLength" class="col-sm-4"></label>
+                                <select asp-for="SignUpForm.SignUpTimeLength" class="col-sm-8 form-control">
+                                    @for(int i=1;i<=group.Duration;i++)
+                                    {
+                                        <option value="@i">@i</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="form-group row">
+                                <input type="submit" value="Sign Up" class="col-sm-4 offset-sm-4 btn btn-primary">
+                            </div>
+                        </form>
+                    </div>
+                </div> *@
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>
