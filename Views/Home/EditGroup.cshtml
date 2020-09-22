@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                <h1>Plan a Group</h1>
+                <h1>Edit a Group</h1>
             </div>
             <div class="col-sm-6 text-right">
                 <a href="/dashboard">Dashboard</a> | <a href="/logout">Log Out</a>
@@ -20,7 +20,7 @@
         </div>
         <div class="row">
             <div class="col-sm-6">
-                <form asp-action="CreateGroup" asp-controller="Home" method="post">
+                <form asp-action="UpdateGroup" asp-controller="Home" method="post">
                     <div class="form-group row">
                         <span class="col-sm-8 offset-sm-4 text-danger" asp-validation-for="GroupName"></span>
                         <label asp-for="GroupName" class="col-sm-4"></label>

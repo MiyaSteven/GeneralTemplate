@@ -11,13 +11,44 @@ namespace GeneralTemplate.Models
         [Key]
         public int GroupId { get; set; }
 
-        [Required(ErrorMessage = "Bright Idea is required.")]
-        [MinLength(5, ErrorMessage = "Bright Idea must be at least 5 characters long.")]
-        [Display(Name = "Bright Idea: ")]
+        [Required(ErrorMessage = "Group Name is required.")]
+        [MinLength(2, ErrorMessage = "Group Name must be at least 2 characters long.")]
+        [Display(Name = "Group Name: ")]
         public string GroupName { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "Member One: ")]
+        public string GroupMemberOne { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "Member Two: ")]
+        public string GroupMemberTwo { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "Start Date: ")]
+        [DataType(DataType.DateTime)]
+        public DateTime? Date { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "End Date: ")]
+        [DataType(DataType.DateTime)]
+        public DateTime? Time { get; set; }
+
+        public int Duration { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "Description: ")]
+        public string Description { get; set; }
+
+        [Required(ErrorMessage = "Required Field")]
+        [Display(Name = "Address: ")]
+        public string Address { get; set; }
         public int UserId { get; set; }
         public User Planner { get; set; }
+        public int SignedUpUserId { get; set; }
+        public SignUp SignUpId { get; set; }
         public List<RSVP> GuestsAttending { get; set; }
+        public List<Comment> Comments { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }

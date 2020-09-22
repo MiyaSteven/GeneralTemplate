@@ -6,14 +6,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeneralTemplate.Models
 {
-    public class RSVP
+    public class SignUp
     {
         [Key]
-        public int RSVPId { get; set; }
-        public int UserId { get; set; }
-        public User Guest { get; set; }
+        public int SignUpId { get; set; }
+
+        [Required(ErrorMessage = "Must Select Hours within Group Timeframe")]
+        public string SignUpTimeLength { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
+        public int UserId { get; set; }
+        public User User { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }

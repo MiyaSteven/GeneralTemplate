@@ -1,4 +1,3 @@
-@using GeneralTemplate.Models
 @model GroupWrapper
 
 <!DOCTYPE html>
@@ -13,67 +12,53 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-10">
-                <h1>Hi @Model.LoggedUser.Name!</h1>
+                <h1>Welcome to the Group Maker</h1>
             </div>
             <div class="col-sm-2">
-                <a href="/logout">Logout</a>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-sm-6">
-                <form class="comment" asp-action="CreateGroup" asp-controller="Home" method="post" asp-route-GroupId="GroupId">
-                    <h5>Add Idea!</h5>
-                    <div>
-                        @* <span class="col-sm-8 offset-sm-4 text-danger" asp-validation-for="GroupForm.GroupName"></span>
-                        <label asp-for="GroupForm.GroupName" class="col-sm-4"></label>
-                        <input asp-for="GroupForm.GroupName" class="col-sm-8 form-control" name="GroupName" id="GroupName"> *@
-                        <textarea name="GroupName" id="GroupName" cols="40" rows="5"></textarea>
-                    </div>
-                    <input type="submit">
-                </form>
-                @* <form asp-action="CreateGroup" asp-controller="Home" method="post">
-                    <div class="form-group row">
-                        <span class="col-sm-8 offset-sm-4 text-danger" asp-validation-for="GroupForm.GroupName"></span>
-                        <label asp-for="GroupForm.GroupName" class="col-sm-4"></label>
-                        <input asp-for="GroupForm.GroupName" class="col-sm-8 form-control">
-                    </div>
-                    <div class="form-group row">
-                        <input type="submit" value="Add Idea!" class="col-sm-4 offset-sm-4 btn btn-primary">
-                    </div>
-                </form> *@
+                <a href="/logout">Log Out</a>
             </div>
         </div>
         <div class="row">
             <div class="col-sm-10 offset-sm-1">
                 <table class="table">
+                    <thead>
+                        <th>Group:</th>
+                        <th>Start Date:</th>
+                        <th>End Time:</th>
+                        <th>Guests:</th>
+                        <th>Actions:</th>
+                    </thead>
                     <tbody>
                         @foreach(Group group in Model.AllGroups)
                         {
                             <tr>
-                                <td><a href="/users/@group.UserId">@group.Planner.Name</a> says:</td>
-                                <td>@group.GroupName</td>
-                            </tr>
-                            <tr>
+                                <td><a href="/groups/@group.GroupId">@group.GroupMemberOne & @group.GroupMemberTwo</a></td>
+                                <td>@group.Date.Value.ToString("MM dd yy @ HH:mm")</td>
+                                <td>@group.Time.Value.ToString("MM dd yy @ HH:mm")</td>
+                                <td>@group.GuestsAttending.Count</td>
                                 <td>
                                     @if(group.UserId==Model.LoggedUser.UserId)
                                     {
+                                        <a href="/groups/@group.GroupId/edit"><button class="btn btn-primary">Edit</button></a> 
                                         <a href="/groups/@group.GroupId/delete"><button class="btn btn-danger">Delete</button></a>
                                     }
                                     else if(group.GuestsAttending.Any(r => r.UserId == Model.LoggedUser.UserId))
                                     {
-                                        <a href="/groups/@group.GroupId/unrsvp"><button class="btn btn-secondary">Un-Like</button></a>
+                                        <a href="/groups/@group.GroupId/unrsvp"><button class="btn btn-secondary">Un-RSVP</button></a>
                                     }
                                     else
                                     {
-                                        <a href="/groups/@group.GroupId/rsvp"><button class="btn btn-primary">Like</button></a>
+                                        <a href="/groups/@group.GroupId/rsvp"><button class="btn btn-primary">RSVP</button></a>
                                     }
                                 </td>
-                                <td><a href="/bright_ideas/@group.GroupId">@group.GuestsAttending.Count people</a> like this.</td>
                             </tr>
                         }
                     </tbody>
                 </table>
             </div>
+        </div>
+        <div class="row">
+            <a href="/groups/new" class="col-sm-4 offset-sm-8"><button class="btn btn-primary">Add a New Group</button></a>
         </div>
     </div>
 </body>

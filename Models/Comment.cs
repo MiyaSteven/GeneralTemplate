@@ -6,12 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GeneralTemplate.Models
 {
-    public class RSVP
+    public class Comment
     {
         [Key]
-        public int RSVPId { get; set; }
+        public int CommentId { get; set; }
+        public string CommentText { get; set; }
         public int UserId { get; set; }
-        public User Guest { get; set; }
+        public User User { get; set; }
         public int GroupId { get; set; }
         public Group Group { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;

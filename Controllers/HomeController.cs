@@ -90,7 +90,7 @@ namespace GeneralTemplate.Controllers
         }
 
 
-        [HttpGet("bright_ideas")]
+        [HttpGet("dashboard")]
         public IActionResult Dashboard()
         {
             int? LoggedId = HttpContext.Session.GetInt32("UserId");
@@ -105,6 +105,7 @@ namespace GeneralTemplate.Controllers
                     .Include(w => w.Planner)
                     .Include(w => w.GuestsAttending)
                     .ThenInclude(r => r.Guest)
+                    .Where(w => w.Date > DateTime.Today)
                     .ToList(),
                 LoggedUser = DbContext.DbUsers
                     .FirstOrDefault(u => u.UserId == (int)LoggedId)
@@ -112,47 +113,47 @@ namespace GeneralTemplate.Controllers
             return View("Dashboard", WMod);
         }
 
-        [HttpPost("create")]
-        public IActionResult CreateGroup(int id)
+        [HttpGet("groups/new")]
+        public IActionResult NewGroup()
         {
-            int? LoggedUser = HttpContext.Session.GetInt32("UserId");
-            if (LoggedUser == null)
+            int? LoggedId = HttpContext.Session.GetInt32("UserId");
+            if (LoggedId == null)
             {
                 return RedirectToAction("LogReg");
             }
+            return View("NewGroup");
+        }
+
+        [HttpPost("groups/create")]
+        public IActionResult CreateGroup(Group FromForm)
+        {
+            int? LoggedId = HttpContext.Session.GetInt32("UserId");
+            if (LoggedId == null)
+            {
+                return RedirectToAction("LogReg");
+            }
+            // Attach the user who planned the group to the object.
+            FromForm.UserId = (int)LoggedId;
+
             if (ModelState.IsValid)
             {
-                string response = Request.Form["GroupName"];
-                Group message = new Group();
-                message.UserId = (int)LoggedUser;
-                message.GroupId = id;
-                message.GroupName = response;
-                DbContext.Add(message);
+                if (FromForm.Date < DateTime.Today)
+                {
+                    ModelState.AddModelError("Date", "No time travel!");
+                    return NewGroup();
+                }
+
+                DbContext.Add(FromForm);
                 DbContext.SaveChanges();
                 return RedirectToAction("Dashboard");
             }
-            return Dashboard();
-        }
-
-        [HttpGet("users/{id}")]
-        public IActionResult UserDetail(int? id)
-        {
-            GroupWrapper WMod = new GroupWrapper();
+            else
             {
-                WMod.AllGroups = DbContext.DbGroups
-                    .Include(w => w.Planner)
-                    .ThenInclude(u => u.ExistingGroups)
-                    .Include(w => w.GuestsAttending)
-                    .ThenInclude(r => r.Guest)
-                    .ToList();
-                WMod.LoggedUser = DbContext.DbUsers
-                    .FirstOrDefault(w => w.UserId == id);
+                return NewGroup();
             }
-
-            return View("UserDetail", WMod);
         }
 
-        [HttpGet("bright_ideas/{GroupId}")]
+        [HttpGet("groups/{GroupId}")]
         public IActionResult GroupDetail(int GroupId)
         {
             int? LoggedId = HttpContext.Session.GetInt32("UserId");
@@ -165,6 +166,10 @@ namespace GeneralTemplate.Controllers
 
             GMod.AllGroups = DbContext.DbGroups
                 .Include(w => w.Planner)
+                .Include(c => c.Comments)
+                // .Include(s => s.SignUpId)
+                // .Include(t => t.Date)
+                // .Include(t => t.Time)
                 .Include(w => w.GuestsAttending)
                 .ThenInclude(r => r.Guest)
                 .Where(w => w.GroupId == GroupId)
@@ -178,6 +183,104 @@ namespace GeneralTemplate.Controllers
                 return RedirectToAction("Dashboard");
             }
             return View("GroupDetail", GMod);
+        }
+
+        [HttpPost("groups/{GroupId}/comment")]
+        public IActionResult PostComment(int GroupId)
+        {
+            int? LoggedUser = HttpContext.Session.GetInt32("UserId");
+            if (LoggedUser == null)
+            {
+                return RedirectToAction("LogReg");
+            }
+            if (ModelState.IsValid)
+            {
+                string response = Request.Form["CommentText"];
+                Comment comment = new Comment();
+                comment.GroupId = GroupId;
+                comment.UserId = (int)LoggedUser;
+                comment.CommentText = response;
+                DbContext.Add(comment);
+                DbContext.SaveChanges();
+                return RedirectToAction("GroupDetail");
+            }
+            return Dashboard();
+        }
+
+        // [HttpPost("/groups/{GroupId}/signup")]
+        // public IActionResult SignUp(int GroupId)
+        // {
+        //     int? LoggedId = HttpContext.Session.GetInt32("UserId");
+        //     if (LoggedId == null)
+        //     {
+        //         return RedirectToAction("LogReg");
+        //     }
+
+        //     if (!DbContext.DbGroups.Any(s => s.GroupId == GroupId))
+        //     {
+        //         return RedirectToAction("Dashboard");
+        //     }
+
+        //     if (ModelState.IsValid)
+        //     {
+        //         string response = Request.Form["SignUpTimeLength"];
+        //         SignUp user = new SignUp();
+        //         user.GroupId = GroupId;
+        //         user.UserId = (int)LoggedId;
+        //         user.SignUpTimeLength = response;
+        //         DbContext.Add(user);
+        //         DbContext.SaveChanges();
+
+        //         return RedirectToAction("GroupDetail");
+        //     }
+        //     return Dashboard();
+        // }
+
+        [HttpGet("groups/{GroupId}/edit")]
+        public IActionResult EditGroup(int GroupId)
+        {
+            int? LoggedId = HttpContext.Session.GetInt32("UserId");
+            if (LoggedId == null)
+            {
+                return RedirectToAction("LogReg");
+            }
+
+            Group ToEdit = DbContext.DbGroups.FirstOrDefault(w => w.GroupId == GroupId);
+
+            if (ToEdit == null || ToEdit.UserId != (int)LoggedId)
+            {
+                return RedirectToAction("Dashboard");
+            }
+
+            return View("EditGroup", ToEdit);
+        }
+
+        [HttpPost("groups/{GroupId}/update")]
+        public IActionResult UpdateGroup(int GroupId, Group FromForm)
+        {
+            int? LoggedId = HttpContext.Session.GetInt32("UserId");
+            if (LoggedId == null)
+            {
+                return RedirectToAction("LogReg");
+            }
+
+            if (!DbContext.DbGroups.Any(w => w.GroupId == GroupId && w.UserId == (int)LoggedId))
+            {
+                return RedirectToAction("Dashboard");
+            }
+            FromForm.UserId = (int)LoggedId;
+            if (ModelState.IsValid)
+            {
+                FromForm.GroupId = GroupId;
+                DbContext.Update(FromForm);
+                DbContext.Entry(FromForm).Property("CreatedAt").IsModified = false;
+                DbContext.SaveChanges();
+                return RedirectToAction("Dashboard");
+            }
+            else
+            {
+                return EditGroup(GroupId);
+            }
         }
 
         [HttpGet("groups/{GroupId}/rsvp")]

@@ -13,5 +13,7 @@ namespace GeneralTemplate.Models
         public DbSet<User> DbUsers { get; set; }
         public DbSet<Group> DbGroups { get; set; }
         public DbSet<RSVP> DbRSVPs { get; set; }
+        public DbSet<Comment> DbComments { get; set; }
+        public DbSet<SignUp> DbSignUpUsers { get; set; }
     }
 }
